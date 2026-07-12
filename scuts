@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# ============================================
+#  scuts - Referencia rápida en Markdown
+# ============================================
+
+DATA_DIR="$HOME/.config/scuts"
+
+# Verificar que glow está instalado
+if ! command -v glow &> /dev/null; then
+    echo -e "\e[31m❌ Error: 'glow' no está instalado.\e[0m"
+    echo "Visita: https://github.com/charmbracelet/glow"
+    exit 1
+fi
+
+# Función de ayuda
+show_help() {
+    echo -e "\e[1;36mUso:\e[0m scuts [seccion]"
+    echo ""
+    echo -e "\e[1;32mSecciones:\e[0m"
+    echo "  vscode    Atajos de Visual Studio Code"
+    echo "  python    Alias para Python y PIP"
+    echo "  git       Alias para Git"
+    echo "  bash      Atajos de terminal y alias de sistema"
+    echo ""
+    echo -e "\e[2mEjecuta 'scuts' sin argumentos para ver el índice.\e[0m"
+}
+
+# Lógica principal
+case "${1:-all}" in
+    vscode|python|git|bash)
+        if [ -f "$DATA_DIR/$1.md" ]; then
+            glow -p "$DATA_DIR/$1.md"
+        else
+            echo "❌ El archivo para '$1' no existe."
+        fi
+        ;;
+    all|"")
+        glow -p "$DATA_DIR/index.md"
+        ;;
+    help|--help|-h)
+        show_help
+        ;;
+    *)
+        echo -e "\e[31m❌ Sección desconocida: '$1'\e[0m"
+        show_help
+        exit 1
+        ;;
+esac
